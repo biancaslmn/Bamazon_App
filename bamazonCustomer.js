@@ -2,6 +2,8 @@ var inquirer = require ("inquirer");
 
 var mysql = require ("mysql");
 
+var update = require('lodash.update');
+
 var connection = mysql.createConnection({
     host: "localhost",
     port: 3306,
@@ -24,7 +26,7 @@ var connection = mysql.createConnection({
       console.log(res);
       if(res.action === 'choose the items you would like to purchase') {
         var query = connection.query(
-            `SELECT * FROM items`,
+            `SELECT * FROM products`,
             {},
             function(err, res) {
                 var itemList = [];
@@ -32,52 +34,45 @@ var connection = mysql.createConnection({
                     itemList.push(res[i].product_name);
                 }
  
-                inquirer.prompt([
-                    {
-                        type: "list",
-                        message: "Which product do you want to purchase?",
-                        choices: itemList,
-                        name: "product"
-                    }
-                ]).then(function(res){
+                then(function(res){
                     console.log(res);
                 });
             });
-      } else {
-          inquirer.prompt([
-          {
-              type: "output",
-              message: "Product Name",
-              name: "name"
-          },
-          {
-              type: "output",
-              message: "Bid Price",
-              name: "price"
-          },
-          {
-              type: "list",
-              message: "Condition: New/Used",
-              choices: ["New", "Used"],
-              name: "condition"
-          }
-          ]).then(function(res) {
-            var department_name = res.department_name;
-            var product_name = res.product_name;
-            var price = res.price;
-            var stock_quantity = res.stock_quantity;
+            } //else {
+            //     inquirer.prompt([
+            //     {
+            //         type: "input",
+            //         message: "Product Name",
+            //         name: "name"
+            //     },
+            //     {
+            //         type: "input",
+            //         message: "Bid Price",
+            //         name: "price"
+            //     },
+            //     {
+            //         type: "list",
+            //         message: "Condition: New/Used",
+            //         choices: ["New", "Used"],
+            //         name: "condition"
+            //     }
+            //     ]).then(function(res) {
+            //         var department_name = res.department_name;
+            //         var product_name = res.product_name;
+            //         var price = res.price;
+            //         var stock_quantity = res.stock_quantity;
 
- 
-            var queryString = `INSERT INTO products(department_name, product_name, price, stock_quantity) VALUES("${department_name}", "${product_name}", "${price}", "${stock_quantity}")`
-            var query = connection.query(
-                queryString,
-                {},
-                function(err, res) {
-                    console.log(err);
-                    console.log(res.affectedRows + " product inserted!\n");
-                });
-            });
-        }
+        
+            //         var queryString = `INSERT INTO products(department_name, product_name, price, stock_quantity) VALUES("${department_name}", "${product_name}", "${price}", "${stock_quantity}")`
+            //         var query = connection.query(
+            //             queryString,
+            //             {},
+            //             function(err, res) {
+            //                 console.log(err);
+            //                 console.log(res.affectedRows + " product inserted!\n");
+            //             });
+            //         });
+            //     }
  
     });
  });
